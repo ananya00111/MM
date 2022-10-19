@@ -1,0 +1,53 @@
+# Price Break Model
+
+import cmath
+import math
+
+D = 150 * 1.25
+h = 0.02
+K = 20
+L = 2
+c1 = 3
+c2 = 2.50
+q = 1000
+
+y_minima = pow((2*D*K/h),0.5)
+if y_minima < q:
+  tcu = (c1*D) + (K*D/y_minima) + (h*y_minima/2)
+  a = 1
+  b = 2*((c2*D) - tcu)/h
+  c = 2*K*D/h
+  dis = (b**2) - (4 * a*c)
+
+  ans1 = (-b-cmath.sqrt(dis))/(2 * a)
+  ans2 = (-b + cmath.sqrt(dis))/(2 * a)
+
+  Q = float(ans1.real) if float(ans1.real) > y_minima else float(ans2.real)
+  print(Q)
+
+  if q > Q:
+    y_optimum = y_minima
+  else:
+    y_optimum = q
+  
+  print("Zone 1 : ", [0,y_minima])
+  print("Zone 2 : ", [y_minima,Q])
+  print("Zone 3 : ", [Q,math.inf])
+
+else:
+  y_optimum = y_minima
+
+from matplotlib import pyplot as plt
+
+cost = []
+y = list(range(1,q+1))
+for x in range(1,q+1):
+  cost.append((c1*D) + (K*D/x) + (h*x/2))
+
+cost_2 = []
+for x in range(1,q+1):
+  cost_2.append((c2*D) + (K*D/x) + (h*x/2))
+
+print(cost)
+plt.plot(y, cost)
+plt.plot(y, cost_2)
