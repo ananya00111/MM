@@ -1,0 +1,52 @@
+# Dynamic EOQ Model with No setup cost 
+
+regular = [90, 100, 120, 110]
+overtime = [50, 60, 80, 70]
+demand = [100, 190, 210, 160]
+period = len(regular)
+
+dynamic_table = [[0 for i in range(period)] for j in range(period*2)]
+
+for i in range(period):
+  if regular[i] < demand[i]:
+    j = 2*i
+    dynamic_table[j][i] = regular[i]
+    remaining = demand[i] - regular[i]
+    regular[i] = 0
+    if overtime[i] <= remaining:
+      dynamic_table[j+1][i] = overtime[i]
+      remaining = remaining - overtime[i]
+      overtime[i] = 0
+    else:
+      dynamic_table[j+1][i] = remaining
+      overtime[i] = overtime[i] - remaining
+      remaining = 0
+    for k in range(i-1,-1,-1):
+        if regular[k] <= remaining and remaining and regular[k]:
+          dynamic_table[2*k][i] = regular[k]
+          remaining = remaining - regular[k]
+          regular[k] = 0
+        elif regular[k] > remaining and remaining and regular[k]:
+          dynamic_table[2*k][i] = remaining
+          regular[k] = regular[k] - remaining
+          remaining = 0
+        elif overtime[k] <= remaining and remaining and overtime[k]:
+          dynamic_table[2*k + 1][i] = overtime[k]
+          remaining = remaining - overtime[k]
+          overtime[k] = 0
+        elif overtime[k] > remaining and remaining and overtime[k]:
+          dynamic_table[2*k + 1][i] = remaining
+          overtime[k] = overtime[k] - remaining
+          remaining = 0
+
+
+reg = [90, 100, 120, 110]
+over = [50, 60, 80, 70]
+for i in range(len(dynamic_table)):
+  if i%2 == 0:
+    print(dynamic_table[i], "  ", reg[i//2])
+  else:
+    print(dynamic_table[i], "  ", over[i//2])
+
+print(*demand)
+
