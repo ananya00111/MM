@@ -6,39 +6,60 @@ demand = [100, 190, 210, 160]
 period = len(regular)
 
 dynamic_table = [[0 for i in range(period)] for j in range(period*2)]
+production_cost = 6
+overtime_cost = 9
+holding_cost = 0.10
+total_cost = 0
 
 for i in range(period):
   if regular[i] < demand[i]:
     j = 2*i
     dynamic_table[j][i] = regular[i]
+    total_cost += regular[i] * production_cost
     remaining = demand[i] - regular[i]
     regular[i] = 0
+    
     if overtime[i] <= remaining:
       dynamic_table[j+1][i] = overtime[i]
+      total_cost += overtime[i] * overtime_cost
       remaining = remaining - overtime[i]
       overtime[i] = 0
+      
+
     else:
       dynamic_table[j+1][i] = remaining
+      total_cost += remaining * overtime_cost
       overtime[i] = overtime[i] - remaining
       remaining = 0
+      
+
+    period = 1
     for k in range(i-1,-1,-1):
         if regular[k] <= remaining and remaining and regular[k]:
           dynamic_table[2*k][i] = regular[k]
+          total_cost += regular[k] * (production_cost + (holding_cost * period)) 
           remaining = remaining - regular[k]
           regular[k] = 0
+          
         elif regular[k] > remaining and remaining and regular[k]:
           dynamic_table[2*k][i] = remaining
+          total_cost += remaining * (production_cost + (holding_cost * period))
           regular[k] = regular[k] - remaining
           remaining = 0
+          
         elif overtime[k] <= remaining and remaining and overtime[k]:
           dynamic_table[2*k + 1][i] = overtime[k]
+          total_cost += overtime[k] * (overtime_cost + (holding_cost * period))
           remaining = remaining - overtime[k]
           overtime[k] = 0
+          
         elif overtime[k] > remaining and remaining and overtime[k]:
           dynamic_table[2*k + 1][i] = remaining
+          total_cost += remaining * (overtime_cost + (holding_cost * period))
           overtime[k] = overtime[k] - remaining
           remaining = 0
-
+          
+        period += 1
 
 reg = [90, 100, 120, 110]
 over = [50, 60, 80, 70]
@@ -49,4 +70,4 @@ for i in range(len(dynamic_table)):
     print(dynamic_table[i], "  ", over[i//2])
 
 print(*demand)
-
+print("Total Cost : ", total_cost)
