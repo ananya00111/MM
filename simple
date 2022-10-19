@@ -1,0 +1,39 @@
+# SIMPLE EOQ MODEL
+
+def inventory_model(demand, setup_cost, holding_cost, lead_time):
+  D = demand
+  K = setup_cost
+  h = holding_cost
+  L = lead_time
+  print("D : ", D, ", K : ", K, ", h : ", h, ", L : ", L)
+
+  y_optimum = pow((2*D*K/h),0.5)
+  t_optimum = y_optimum/D
+
+  print("Optimum order quantity : ", y_optimum)
+  print("Optimum ordering cycle length : ", t_optimum)
+
+  if L > t_optimum:
+    effective_lead_time = int(L - ((L//t_optimum) * t_optimum))
+  else:
+    effective_lead_time = L
+
+  print("Effective lead time : ", effective_lead_time)
+
+  reordering_point = effective_lead_time * D
+
+  print("Inventory Policy : Order ", y_optimum, " units whenever the inventory level drops to ", reordering_point, " units.")
+
+  tcu = pow((2*D*K*h),0.5)
+
+  print("Cost associated with the proposed policy : ", tcu)
+
+
+D = [100, 25, 35, 50, 25]
+K = [100, 120, 80, 100, 110]
+h = [0.02, 0.04, 0.03, 0.02, 0.03]
+L = [12, 35, 35, 35, 35]
+
+for i in range(len(D)):
+  inventory_model(D[i], K[i], h[i], L[i])
+  print()
