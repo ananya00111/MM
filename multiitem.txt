@@ -1,0 +1,27 @@
+import matplotlib.pyplot as plt
+from scipy import optimize
+import numpy as np
+
+# http://zalamsyah.staff.unja.ac.id/wp-content/uploads/sites/286/2019/11/9-Operations-Research-An-Introduction-10th-Ed.-Hamdy-A-Taha.pdf
+# pg 515
+
+k = [10, 5, 15]
+d = [2, 4, 4]
+h= [0.3, 0.1, 0.2]
+y = [11.55, 20.00, 24.49]
+a = [1, 2, 3]
+
+def f(x):  
+    val = (k[0]*d[0]/x[0] + h[0]*x[0]/2) + (k[1]*d[1]/x[1] + h[1]*x[1]/2) + (k[2]*d[2]/x[2] + h[2]*x[2]/2)
+    print(f"F(x) = {val}")
+    return val
+
+
+def constraint(x):
+    # sum should be less than 50
+    # print(x)
+    return 50 - (a[0]*x[0] + a[1]*x[1] + a[2]*x[2])
+
+result = optimize.minimize(f, y, constraints={"fun": constraint, "type": "ineq"}, method='SLSQP', bounds=((0, 10000), (0, 10000), (0, 10000)))
+print(f"y values: {list(result['x'])}")
+print()
