@@ -7,3 +7,5 @@
 5. dynamic_with_setup.txt
 6. dynamic_no_setup.txt
 7. dynamic_with_setup_2.txt
+8. multiitem.txt
+
